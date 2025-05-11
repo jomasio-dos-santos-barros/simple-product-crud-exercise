@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from src.views.components import SidebarButton, SideBar
-from src.views.pages import AddProductPage
+from src.views.pages import AddProductPage, ListProductsPage
 from src.views import styles
 
 
@@ -12,6 +12,13 @@ class Home(tk.Frame):
             bg=styles.BACKGROUND_COLOR,
         )
         self.master
+        self.pages = {
+            "add_product": AddProductPage,
+            "list_products": None,  # Placeholder for future pages
+            "search_product": None,
+            "update_product": None,
+            "delete_product": None,
+        }
 
         self.create_widgets()
 
@@ -21,7 +28,6 @@ class Home(tk.Frame):
     def create_widgets(self):
 
         self.create_sidebar()
-        self.create_content()
 
     def create_sidebar(self):
         self.side_bar = SideBar(self)
@@ -29,13 +35,13 @@ class Home(tk.Frame):
         self.add_product = SidebarButton(
             self.side_bar,
             "Adicionar Produto",
-            command=lambda: print("Adicionar Produto")
+            command=lambda: self.set_content(AddProductPage)
         )
 
         self.get_all_products = SidebarButton(
             self.side_bar,
             "Listar Produtos",
-            command=lambda: print("Listar Produtos")
+            command=lambda: self.set_content(ListProductsPage)
         )
 
         self.get_product_by_name = SidebarButton(
@@ -70,6 +76,10 @@ class Home(tk.Frame):
         self.side_bar.add_button(self.update_product)
         self.side_bar.add_button(self.delete_product)
 
-    def create_content(self):
-        self.content = AddProductPage(self)
+    def set_content(self, content: tk.Frame = AddProductPage):
+
+        if hasattr(self, "content"):
+            self.content.destroy()
+
+        self.content = content(self)
         self.content.pack(fill="both", expand=True)

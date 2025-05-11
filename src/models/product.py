@@ -86,7 +86,7 @@ class ProductModel(BaseModel):
         """
         cursor = db_session.cursor()
         if product_id is None:
-            cursor.execute("SELECT * FROM product")
+            cursor.execute("SELECT * FROM products")
             rows = cursor.fetchall()
             return [
                 ProductModel(
@@ -100,7 +100,7 @@ class ProductModel(BaseModel):
                 for row in rows
             ]
         else:
-            cursor.execute("SELECT * FROM product WHERE id = ?", (product_id,))
+            cursor.execute("SELECT * FROM products WHERE id = ?", (product_id,))
             row = cursor.fetchone()
             if row:
                 return ProductModel(

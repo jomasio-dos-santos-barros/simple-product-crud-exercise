@@ -46,8 +46,7 @@ class ProductController:
             list[ProductResponse]: A list of response objects containing product data.
         """
         with self.db as db_session:
-            model = ProductModel()
-            products = model.get(db_session)
+            products = ProductModel.get(db_session)
 
             response = [self.map_model_to_response(product) for product in products]
 
