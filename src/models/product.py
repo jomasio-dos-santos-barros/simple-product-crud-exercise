@@ -1,6 +1,7 @@
 from datetime import datetime
+from sqlite3 import Connection
 
-from src.core import BaseModel
+from src.core import BaseModel, id_generator
 
 
 class ProductModel(BaseModel):
@@ -16,17 +17,17 @@ class ProductModel(BaseModel):
         updated_at (datetime)
 
     Methods:
-        add
-        get
-        update
-        delete
+        add(db_session)
+        get(db_session, product_id)
+        update(db_session)
+        delete(db_session, product_id)
     """
     def __init__(
         self,
-        id: str,
         name: str,
         price: float,
         quantity: int,
+        id: str = id_generator(),
         created_at: datetime = datetime.now(),
         updated_at: datetime = datetime.now()
     ):
@@ -51,14 +52,100 @@ class ProductModel(BaseModel):
         self.updated_at = updated_at
 
 
-    def add(self):
+    
+    def add(self, db_session: Connection) -> "ProductModel":
+        """
+        Add a new product to the database
+
+        Args:
+            db_session (Connection): Database connection
+
+        Returns:
+            ProductModel: The created product
+        """
+        # Implementation for adding a product to the database
+        cursor = db_session.cursor()
+        cursor.execute(
+            """
+            INSERT INTO products (id, name, price, quantity, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (self.id, self.name, self.price, self.quantity, self.created_at, self.updated_at)
+        )
         return self
     
-    def get(self):
+    @staticmethod
+    def get(db_session: Connection, product_id: str | None = None) -> "ProductModel":
+        """
+        Get a product from the database
+        Args:
+            db_session (Connection): Database connection
+            product_id (str | None): Product ID to fetch. If None, fetch all products.
+        Returns:
+            ProductModel | list[ProductModel] | None: The fetched product or list of products
+        """
+        cursor = db_session.cursor()
+        if product_id is None:
+            cursor.execute("SELECT * FROM product")
+            rows = cursor.fetchall()
+            return [
+                ProductModel(
+                    id=row[0],
+                    name=row[1],
+                    price=row[2],
+                    quantity=row[3],
+                    created_at=datetime.fromisoformat(row[4]),
+                    updated_at=datetime.fromisoformat(row[5])
+                )
+                for row in rows
+            ]
+        else:
+            cursor.execute("SELECT * FROM product WHERE id = ?", (product_id,))
+            row = cursor.fetchone()
+            if row:
+                return ProductModel(
+                    id=row[0],
+                    name=row[1],
+                    price=row[2],
+                    quantity=row[3],
+                    created_at=datetime.fromisoformat(row[4]),
+                    updated_at=datetime.fromisoformat(row[5])
+                )
+            return None
+    
+    def update(self, db_session: Connection) -> "ProductModel":
+        """
+        Update a product in the database
+
+        Args:
+            db_session (Connection): Database connection
+        Returns:
+            ProductModel: The updated product
+        """
+        cursor = db_session.cursor()
+        cursor.execute(
+            """
+            UPDATE products
+            SET name = ?, price = ?, quantity = ?, updated_at = ?
+            WHERE id = ?
+            """,
+            (self.name, self.price, self.quantity, datetime.now(), self.id)
+        )
+        db_session.commit()
         return self
     
-    def update(self):
-        return self
-    
-    def delete(self):
-        return self
+    @staticmethod
+    def delete(db_session: Connection, product_id: str) -> bool:
+        """
+        Delete a product from the database
+        Args:
+            db_session (Connection): Database connection
+            product_id (str): Product ID to delete
+        Returns:
+            bool: True if the product was deleted, False otherwise
+        """
+        cursor = db_session.cursor()
+        cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
+        db_session.commit()
+        
+        return cursor.rowcount > 0
