@@ -7,7 +7,7 @@ from src.views import styles
 from src.views.components import MainContent
 
 class ListProductsPage(MainContent):
-    def __init__(self, master):
+    def __init__(self, master: tk.Frame):
         super().__init__(master)
         self.master = master
         self.controller = ProductController()
@@ -17,7 +17,9 @@ class ListProductsPage(MainContent):
 
     def create_widgets(self):
         """
-        Método para criar os widgets da página de listagem de produtos.
+        Create the widgets for the List Products page.
+        This method creates the title label, the product table,
+        the refresh button, and the scrollbar for the table.
         """
         self.title = tk.Label(
             self,
@@ -45,15 +47,15 @@ class ListProductsPage(MainContent):
         self.product_table.heading("updated_at", text="Atualizado em")
 
         # Configura o tamanho das colunas
-        self.product_table.column("name", width=200, anchor="w")
+        self.product_table.column("name", width=200, anchor="center")
         self.product_table.column("price", width=100, anchor="center")
         self.product_table.column("quantity", width=100, anchor="center")
         self.product_table.column("created_at", width=150, anchor="center")
         self.product_table.column("updated_at", width=150, anchor="center")
         # Adiciona uma barra de rolagem
-        self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.product_table.yview)
-        self.product_table.configure(yscroll=self.scrollbar.set)
-        self.scrollbar.pack(side="right", fill="y")
+        # self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.product_table.yview)
+        # self.product_table.configure(yscroll=self.scrollbar.set)
+        # self.scrollbar.pack(side="right", fill="y")
         # Configura a tabela para preencher o espaço disponível
         self.product_table.pack(fill="both", expand=True)
         # Adiciona um botão para atualizar a lista de produtos

@@ -8,8 +8,8 @@ class SidebarButton(tk.Button):
         super().__init__(
             master=master,
             bg=styles.FOREGROUND_COLOR,
-            border=2,
-            borderwidth=1,
+            border=styles.BORDER_THICKNESS,
+            borderwidth=styles.BORDER_WIDTH,
             command=command,
             text=text
         )

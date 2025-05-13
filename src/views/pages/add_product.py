@@ -1,3 +1,4 @@
+import tkinter as tk
 from tkinter import messagebox
 
 from src.controllers import ProductController
@@ -5,7 +6,27 @@ from src.schemas import ProductRequest
 from src.views.components import Button, Input, Form
 
 class AddProductPage(Form):
-    def __init__(self, master):
+    """
+    Class representing the Add Product page.
+    This class inherits from the Form class and is responsible for
+    creating the widgets and handling the logic for adding a product.
+    It contains methods for adding a product, canceling the addition,
+    creating the widgets, and cleaning the input fields.
+    Attributes:
+        master (tk.Tk): The main application window.
+        controller (ProductController): The controller for handling product operations.
+        product_name (Input): Input field for the product name.
+        product_quantity (Input): Input field for the product quantity.
+        product_price (Input): Input field for the product price.
+        confirm (Button): Button to confirm the addition of the product.
+        cancel_button (Button): Button to cancel the addition of the product.
+    Methods:
+        add_product(event=None): Method to add a product.
+        cancel_product(event=None): Method to cancel the addition of a product.
+        create_widgets(): Method to create the widgets for the page.
+        clean_widgets(): Method to clean the input fields.
+    """
+    def __init__(self, master: tk.Frame):
         super().__init__(master, title="Adicionar Produto")
         self.master = master
         self.controller = ProductController()
@@ -25,7 +46,7 @@ class AddProductPage(Form):
                 "Erro no cadastro",
                 "Preencha todos os campos obrigatórios."
             )
-            exit()
+            return None
 
         try:
             product_quantity = int(product_quantity)
@@ -34,7 +55,7 @@ class AddProductPage(Form):
                 "Erro no cadastro",
                 "Quantidade deve ser um número inteiro."
             )
-            exit()
+            return None
 
         try:
             product_price = float(product_price)
@@ -43,7 +64,7 @@ class AddProductPage(Form):
                 "Erro no cadastro",
                 "Preço deve ser um número decimal."
             )
-            exit()
+            return None
 
         request = ProductRequest(
             name=product_name,
@@ -72,7 +93,9 @@ class AddProductPage(Form):
         )
 
     def create_widgets(self):
-        # Aqui você pode adicionar os widgets necessários para o conteúdo de adicionar produto
+        """
+        Crate the widgets for the Add Product page.
+        """
         self.product_name = Input(self, "Ex: Bolo de Chocolate")
         self.product_quantity = Input(self, "10")
         self.product_price = Input(self, "20")

@@ -40,7 +40,9 @@ from .sizes import (
     INPUT_WIDTH,
     INPUT_HEIGHT,
     BUTTON_WIDTH,
-    BUTTON_HEIGHT
+    BUTTON_HEIGHT,
+    SIDEBAR_HEIGHT,
+    SIDEBAR_WIDTH
 )
 
 __all__ = [
@@ -81,5 +83,7 @@ __all__ = [
     "CONFIRM_BUTTON_TEXT_HOVER_COLOR",
     "BUTTON_WIDTH",
     "BUTTON_HEIGHT",
-    "TITLE_FONT"
+    "TITLE_FONT",
+    "SIDEBAR_HEIGHT",
+    "SIDEBAR_WIDTH",
 ]
